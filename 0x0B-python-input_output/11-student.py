@@ -1,41 +1,37 @@
 #!/usr/bin/python3
-"""Defines a class Student."""
+"""contains a class"""
 
 
 class Student:
-    """Represent a student."""
-
+    """student class"""
     def __init__(self, first_name, last_name, age):
-        """Initialize a new Student.
-
-        Args:
-            first_name (str): The first name of the student.
-            last_name (str): The last name of the student.
-            age (int): The age of the student.
-        """
+        """Initialization of the student object"""
         self.first_name = first_name
         self.last_name = last_name
         self.age = age
 
     def to_json(self, attrs=None):
-        """Get a dictionary representation of the Student.
-
-        If attrs is a list of strings, represents only those attributes
-        included in the list.
-
-        Args:
-            attrs (list): (Optional) The attributes to represent.
+        """return a dictionary representation of a Student instance
+        If attrs is a list of strings, only attribute names contained
+        in this list must be retrieved.
+        Otherwise, all attributes must be retrieved
         """
-        if (type(attrs) == list and
-                all(type(ele) == str for ele in attrs)):
-            return {k: getattr(self, k) for k in attrs if hasattr(self, k)}
-        return self.__dict__
+        try:
+            for attr in attrs:
+                if type(attr) is not str:
+                    return self.__dict__
+        except TypeError:
+            return self.__dict__
+        my_dict = dict()
+        for key, value in self.__dict__.items():
+            if key in attrs:
+                my_dict[key] = value
+        return my_dict
 
     def reload_from_json(self, json):
-        """Replace all attributes of the Student.
-
-        Args:
-            json (dict): The key/value pairs to replace attributes with.
+        """this function replaces all attributes of the Student instance
+        with the ones in the json argument
         """
-        for k, v in json.items():
-            setattr(self, k, v)
+        for key, value in json.items():
+            if key in self.__dict__:
+                self.__dict__[key] = value
